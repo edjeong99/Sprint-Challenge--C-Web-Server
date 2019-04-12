@@ -50,6 +50,7 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
 
 // remove http:// or https:// from hostname
+
 if (strstr(url, "http://"))
   {
     hostname = strdup(url + 7);
@@ -118,7 +119,7 @@ int send_request(int fd, char *hostname, char *port, char *path)
  int request_length = sprintf(request,
         "GET /%s HTTP/1.1\n"
         "Host: %s:%s\n"
-        "Connection: close\n "
+        "Connection: close\n\n "
         ,path,hostname, port );
 
 
@@ -129,10 +130,10 @@ int send_request(int fd, char *hostname, char *port, char *path)
 
   if (rv < 0) {
       perror("send");
-      printf("send error\n");
+   //   printf("send error\n");
   }
 
-printf("request: %s\n rv = %d\n", request, rv);
+// printf("request: %s\n rv = %d\n", request, rv);
   return rv;
 
 
@@ -167,7 +168,7 @@ int main(int argc, char *argv[])
 
   //  2. Initialize a socket by calling the `get_socket` function from lib.c
   sockfd = get_socket(input_url->hostname, input_url->port);
-  printf("sockfd %d\n", sockfd);
+  //printf("sockfd %d\n", sockfd);
   if (sockfd  < 0) {
       fprintf(stderr,"webserver: fatal error getting listening socket\n");
       exit(1);
@@ -177,7 +178,7 @@ int main(int argc, char *argv[])
 send_request(sockfd, input_url->hostname, input_url->port, input_url->path);
 
  //4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
-  printf("starting recv\n");
+  //printf("starting recv\n");
 
 
     while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
