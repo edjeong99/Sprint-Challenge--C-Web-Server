@@ -48,6 +48,35 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+//1. Use strchr to find the first backslash in the URL 
+//2. Set the path pointer to 1 character after the spot returned by strchr.
+
+ path = strchr(hostname, '/');
+
+
+//  3. Overwrite the backslash with a '\0' so that we are no longer considering anything after the backslash.
+ *path = '\0';
+ 
+ //2. Set the path pointer to 1 character after the spot returned by strchr.
+ path++;
+
+
+
+//4. Use strchr to find the first colon in the URL.
+
+  port = strchr(hostname, ':');
+
+ // 5. Set the port pointer to 1 character after the spot returned by strchr.
+ //   6. Overwrite the colon with a '\0' so that we are just left with the hostname.
+ *port = '\0';
+  port++;
+
+ printf("hostname = %s\n", hostname);
+
+   printf("path = %s\n", path);
+   printf("port = %s\n", port);
+
+
 
   return urlinfo;
 }
@@ -79,6 +108,8 @@ int main(int argc, char *argv[])
 {  
   int sockfd, numbytes;  
   char buf[BUFSIZE];
+  urlinfo_t *input_url;
+
 
   if (argc != 2) {
     fprintf(stderr,"usage: client HOSTNAME:PORT/PATH\n");
@@ -87,7 +118,6 @@ int main(int argc, char *argv[])
 
   /*
     1. Parse the input URL
-    
     2. Initialize a socket by calling the `get_socket` function from lib.c
     3. Call `send_request` to construct the request and send it
     4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
@@ -97,6 +127,10 @@ int main(int argc, char *argv[])
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+
+  //1. Parse the input URL
+  input_url = parse_url(argv[1]);
+
 
   return 0;
 }
