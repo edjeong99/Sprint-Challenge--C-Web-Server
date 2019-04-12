@@ -48,6 +48,21 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+
+// remove http:// or https:// from hostname
+if (strstr(url, "http://"))
+  {
+    hostname = strdup(url + 7);
+  }
+  else if (strstr(url, "https://"))
+  {
+    hostname = strdup(url + 8);
+  }
+  else
+  {
+    hostname = strdup(url);
+  }
+
 //1. Use strchr to find the first backslash in the URL 
 //2. Set the path pointer to 1 character after the spot returned by strchr.
   path = strchr(hostname, '/');
@@ -101,16 +116,15 @@ int send_request(int fd, char *hostname, char *port, char *path)
 
 
  int request_length = sprintf(request,
-        "GET "
-        "/%s HTTP/1.1\n"
+        "GET /%s HTTP/1.1\n"
         "Host: %s:%s\n"
         "Connection: close\n "
         ,path,hostname, port );
 
 
-  printf("request: %s", request);
+  
  
-  rv = send(fd, request, request_length+1, 0);
+  rv = send(fd, request, request_length, 0);
 
 
   if (rv < 0) {
@@ -171,5 +185,6 @@ send_request(sockfd, input_url->hostname, input_url->port, input_url->path);
       // printf("buf = %s\n", buf);
     }
 
-
+  close(sockfd);
+  free(input_url);
 }
