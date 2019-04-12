@@ -50,20 +50,15 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
 //1. Use strchr to find the first backslash in the URL 
 //2. Set the path pointer to 1 character after the spot returned by strchr.
-
- path = strchr(hostname, '/');
-
-
+  path = strchr(hostname, '/');
 //  3. Overwrite the backslash with a '\0' so that we are no longer considering anything after the backslash.
  *path = '\0';
- 
  //2. Set the path pointer to 1 character after the spot returned by strchr.
- path++;
+  path++;
 
 
 
 //4. Use strchr to find the first colon in the URL.
-
   port = strchr(hostname, ':');
 
  // 5. Set the port pointer to 1 character after the spot returned by strchr.
@@ -71,12 +66,14 @@ urlinfo_t *parse_url(char *url)
  *port = '\0';
   port++;
 
- printf("hostname = %s\n", hostname);
+  //  printf("hostname = %s\n", hostname);
+  //  printf("path = %s\n", path);
+  //  printf("port = %s\n", port);
 
-   printf("path = %s\n", path);
-   printf("port = %s\n", port);
-
-
+  urlinfo->hostname = hostname;
+  urlinfo->port = port;
+  urlinfo->path = path;
+  
 
   return urlinfo;
 }
@@ -117,8 +114,7 @@ int main(int argc, char *argv[])
   }
 
   /*
-    1. Parse the input URL
-    2. Initialize a socket by calling the `get_socket` function from lib.c
+     2. Initialize a socket by calling the `get_socket` function from lib.c
     3. Call `send_request` to construct the request and send it
     4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
     5. Clean up any allocated memory and open file descriptors.
@@ -131,6 +127,11 @@ int main(int argc, char *argv[])
   //1. Parse the input URL
   input_url = parse_url(argv[1]);
 
+  //  2. Initialize a socket by calling the `get_socket` function from lib.c
+  if ((sockfd = get_socket(input_url->hostname, input_url->port) < 0)) {
+      fprintf(stderr,"webserver: fatal error getting listening socket\n");
+      exit(1);
+  }
 
-  return 0;
+//    3. Call `send_request` to construct the request and send it
 }
