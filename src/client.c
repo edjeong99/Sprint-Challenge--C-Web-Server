@@ -29,8 +29,8 @@ urlinfo_t *parse_url(char *url)
 {
   // copy the input URL so as not to mutate the original
   char *hostname = strdup(url);
-  char *port;
-  char *path;
+  char *port = "80";
+  char *path = "";
 
   urlinfo_t *urlinfo = malloc(sizeof(urlinfo_t));
 
@@ -59,32 +59,34 @@ if (strstr(url, "http://"))
   {
     hostname = strdup(url + 8);
   }
-  else
-  {
-    hostname = strdup(url);
-  }
-
+ 
+printf("#1 hostname = %s\n", hostname);
 //1. Use strchr to find the first backslash in the URL 
 //2. Set the path pointer to 1 character after the spot returned by strchr.
+ 
+ if (strchr(hostname, '/')) {
   path = strchr(hostname, '/');
 //  3. Overwrite the backslash with a '\0' so that we are no longer considering anything after the backslash.
  *path = '\0';
  //2. Set the path pointer to 1 character after the spot returned by strchr.
   path++;
-
-
+ }
+printf("#1 path = %s\n", path);
 
 //4. Use strchr to find the first colon in the URL.
-  port = strchr(hostname, ':');
-
+// if there is no ":", just use default port 80
+  if (strchr(hostname, ':')) {
+    port = strchr(hostname, ':');
+    *port = '\0';
+     port++;
+}
  // 5. Set the port pointer to 1 character after the spot returned by strchr.
  //   6. Overwrite the colon with a '\0' so that we are just left with the hostname.
- *port = '\0';
-  port++;
+ 
 
-  //  printf("hostname = %s\n", hostname);
-  //  printf("path = %s\n", path);
-  //  printf("port = %s\n", port);
+   printf("hostname = %s\n", hostname);
+   printf("path = %s\n", path);
+   printf("port = %s\n", port);
 
   urlinfo->hostname = hostname;
   urlinfo->port = port;
