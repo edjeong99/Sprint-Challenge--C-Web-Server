@@ -110,11 +110,15 @@ int send_request(int fd, char *hostname, char *port, char *path)
 
   printf("request: %s", request);
  
-  rv = send(fd, request, request_length, 0);
+  rv = send(fd, request, request_length+1, 0);
+
+
   if (rv < 0) {
       perror("send");
+      printf("send error\n");
   }
 
+printf("request: %s\n rv = %d\n", request, rv);
   return rv;
 
 
@@ -148,12 +152,24 @@ int main(int argc, char *argv[])
   input_url = parse_url(argv[1]);
 
   //  2. Initialize a socket by calling the `get_socket` function from lib.c
-  if ((sockfd = get_socket(input_url->hostname, input_url->port) < 0)) {
+  sockfd = get_socket(input_url->hostname, input_url->port);
+  printf("sockfd %d\n", sockfd);
+  if (sockfd  < 0) {
       fprintf(stderr,"webserver: fatal error getting listening socket\n");
       exit(1);
   }
 
 //    3. Call `send_request` to construct the request and send it
 send_request(sockfd, input_url->hostname, input_url->port, input_url->path);
+
+ //4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
+  printf("starting recv\n");
+
+
+    while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
+      fwrite(buf, 1, numbytes, stdout);
+      // printf("buf = %s\n", buf);
+    }
+
 
 }
