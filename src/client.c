@@ -97,8 +97,28 @@ int send_request(int fd, char *hostname, char *port, char *path)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+  // Build HTTP request and store it in request
 
-  return 0;
+
+ int request_length = sprintf(request,
+        "GET "
+        "/%s HTTP/1.1\n"
+        "Host: %s:%s\n"
+        "Connection: close\n "
+        ,path,hostname, port );
+
+
+  printf("request: %s", request);
+ 
+  rv = send(fd, request, request_length, 0);
+  if (rv < 0) {
+      perror("send");
+  }
+
+  return rv;
+
+
+ 
 }
 
 int main(int argc, char *argv[])
@@ -134,4 +154,6 @@ int main(int argc, char *argv[])
   }
 
 //    3. Call `send_request` to construct the request and send it
+send_request(sockfd, input_url->hostname, input_url->port, input_url->path);
+
 }
